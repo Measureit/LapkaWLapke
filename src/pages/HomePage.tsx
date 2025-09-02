@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import NewsletterSection from '../components/NewsletterSection.tsx';
 import PawLogo from '../components/PawLogo.tsx';
-import type { BlogPost } from '../hooks/useBlogPosts.ts';
 
 const HomePage: React.FC = () => {
   return (
