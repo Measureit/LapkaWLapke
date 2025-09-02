@@ -18,8 +18,10 @@ jobs:
           node-version: '20.19'
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci   # better for CI than npm install
+      - name: Clean install dependencies
+        run: |
+          rm -rf node_modules package-lock.json
+          npm install
 
       - name: Build project
         run: npm run build
