@@ -12,7 +12,7 @@ import Footer from './components/Footer.tsx';
 
 function App() {
   return (
-    <Router>
+    <Router basename="/LapkaWLapke">
       <div className="App">
         <Navbar />
         <main>
