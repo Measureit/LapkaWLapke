@@ -1,10 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import NewsletterSection from '../components/NewsletterSection.tsx';
 import PawLogo from '../components/PawLogo.tsx';
+import type { BlogPost } from '../hooks/useBlogPosts.ts';
 
 const HomePage: React.FC = () => {
+  const [setPosts] = useState<BlogPost[]>([]);
+
+    useEffect(() => {
+    const importPosts = async () => {
+      const postFiles = import.meta.glob('../posts/*.md', { eager: true, as: 'raw' });
+      const loadedPosts = Object.entries(postFiles).map(([, content]) => {
+
+        const [metaRaw, ...body] = content.split('---').filter(Boolean);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const meta: any = {};
+        metaRaw.split('\n').forEach(line => {
+          const [key, value] = line.split(':').map(s => s.trim());
+          if (key) meta[key] = value;
+        });
+        return {
+          ...meta,
+          content: body.join('---')
+        };
+      });
+      setPosts(loadedPosts);
+    };
+    importPosts();
+  }, []);
+
   return (
     <div className="fade-in">
       {/* Hero Section */}
@@ -111,101 +136,7 @@ const HomePage: React.FC = () => {
           </Row>
         </Container>
       </section>
-
-      {/* Latest Blog Posts */}
-      <section className="py-5 bg-light">
-        <Container>
-          <Row className="mb-5">
-            <Col>
-              <h2 className="text-center text-primary mb-3">Najnowsze wpisy z bloga</h2>
-              <p className="text-center text-muted">
-                Poznaj najnowsze porady i ciekawostki ze świata psów
-              </p>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4} className="mb-4">
-              <Card className="h-100">
-                <Card.Img 
-                  variant="top" 
-                  src="https://via.placeholder.com/300x200/bb8fce/ffffff?text=Pies+w+parku"
-                  alt="Pies bawiący się w parku"
-                />
-                <Card.Body>
-                  <div className="blog-meta">
-                    <i className="bi bi-calendar3 me-1"></i>
-                    15 stycznia 2025
-                  </div>
-                  <Card.Title>Jak trenować szczeniaka - pierwszy krok</Card.Title>
-                  <Card.Text>
-                    Poznaj podstawowe zasady treningu szczeniąt i dowiedz się, 
-                    jak zbudować silną więź ze swoim nowym przyjacielem.
-                  </Card.Text>
-                  <Button variant="primary" size="sm">
-                    Czytaj więcej
-                  </Button>
-                </Card.Body>
-              </Card>
-            </Col>
-            <Col md={4} className="mb-4">
-              <Card className="h-100">
-                <Card.Img 
-                  variant="top" 
-                  src="https://via.placeholder.com/300x200/bb8fce/ffffff?text=Zdrowa+karma"
-                  alt="Miska z zdrową karmą dla psa"
-                />
-                <Card.Body>
-                  <div className="blog-meta">
-                    <i className="bi bi-calendar3 me-1"></i>
-                    12 stycznia 2025
-                  </div>
-                  <Card.Title>Zdrowe odżywianie psa - kompletny przewodnik</Card.Title>
-                  <Card.Text>
-                    Wszystko co musisz wiedzieć o prawidłowym karmieniu swojego psa, 
-                    aby zapewnić mu długie i zdrowe życie.
-                  </Card.Text>
-                  <Button variant="primary" size="sm">
-                    Czytaj więcej
-                  </Button>
-                </Card.Body>
-              </Card>
-            </Col>
-            <Col md={4} className="mb-4">
-              <Card className="h-100">
-                <Card.Img 
-                  variant="top" 
-                  src="https://via.placeholder.com/300x200/bb8fce/ffffff?text=Pielęgnacja+psa"
-                  alt="Pielęgnacja i szczotkowanie psa"
-                />
-                <Card.Body>
-                  <div className="blog-meta">
-                    <i className="bi bi-calendar3 me-1"></i>
-                    8 stycznia 2025
-                  </div>
-                  <Card.Title>Pielęgnacja sierści - sekrety profesjonalistów</Card.Title>
-                  <Card.Text>
-                    Dowiedz się, jak prawidłowo pielęgnować sierść swojego psa 
-                    i jakie produkty wybrać dla różnych typów psiej sierści.
-                  </Card.Text>
-                  <Button variant="primary" size="sm">
-                    Czytaj więcej
-                  </Button>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-          <Row>
-            <Col className="text-center">
-              <LinkContainer to="/blog">
-                <Button variant="outline-primary" size="lg">
-                  Zobacz wszystkie wpisy <i className="bi bi-arrow-right ms-1"></i>
-                </Button>
-              </LinkContainer>
-            </Col>
-          </Row>
-        </Container>
-      </section>
-
+      
       {/* Newsletter Section */}
       <NewsletterSection />
 
