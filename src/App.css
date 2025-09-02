@@ -1,0 +1,1000 @@
+/* Łapka w Łapkę - Purple & White Theme */
+:root {
+  --primary-purple: #8e44ad;
+  --light-purple: #bb8fce;
+  --dark-purple: #6b2c91;
+  --accent-pink: #e8d8f5;
+  --white: #ffffff;
+  --light-gray: #f8f9fa;
+  --text-dark: #2c3e50;
+  --text-light: #6c757d;
+}
+
+/* Force responsive behavior */
+html {
+  overflow-x: hidden !important;
+  width: 100% !important;
+  max-width: 100vw !important;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;  .hero-section {
+    padding: 80px 0;
+  }
+  
+  .hero-section .paw-logo {
+    margin-top: 15px;
+    margin-bottom: 25px;
+  }color: var(--text-dark);
+  background-color: var(--white);
+  overflow-x: hidden !important;
+  width: 100% !important;
+  max-width: 100vw !important;
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  overflow-x: hidden !important;
+  width: 100% !important;
+  max-width: 100vw !important;
+}
+
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  width: 100% !important;
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
+}
+
+main {
+  flex: 1;
+  width: 100% !important;
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
+}
+
+/* Container improvements */
+.container,
+.container-fluid {
+  max-width: 100% !important;
+  padding-left: 15px;
+  padding-right: 15px;
+  overflow-x: hidden !important;
+  width: 100% !important;
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1320px;
+  }
+}
+
+/* Force Bootstrap responsive behavior */
+.row {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+.col,
+[class*="col-"] {
+  overflow-x: hidden !important;
+  word-wrap: break-word;
+  max-width: 100% !important;
+}
+
+/* Ensure images and content don't break layout */
+img {
+  max-width: 100% !important;
+  height: auto;
+}
+
+.card,
+.card-img-top {
+  max-width: 100% !important;
+  overflow: hidden;
+}
+
+/* Custom purple theme for Bootstrap components */
+.btn-primary {
+  background-color: var(--primary-purple);
+  border-color: var(--primary-purple);
+}
+
+.btn-primary:hover {
+  background-color: var(--dark-purple);
+  border-color: var(--dark-purple);
+}
+
+.btn-outline-primary {
+  color: var(--primary-purple);
+  border-color: var(--primary-purple);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--primary-purple);
+  border-color: var(--primary-purple);
+}
+
+.text-primary {
+  color: var(--primary-purple) !important;
+}
+
+.bg-primary {
+  background-color: var(--primary-purple) !important;
+}
+
+.bg-light-purple {
+  background-color: var(--light-purple);
+}
+
+.bg-accent-pink {
+  background-color: var(--accent-pink);
+}
+
+/* Hero section styling */
+.hero-section {
+  background: linear-gradient(135deg, var(--primary-purple) 0%, var(--light-purple) 50%, var(--accent-pink) 100%);
+  color: white;
+  padding: 120px 0; /* Increased top padding to accommodate logo animation */
+  text-align: center;
+  position: relative;
+  overflow-x: hidden; /* Only hide horizontal overflow */
+  width: 100%;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(142, 68, 173, 0.1);
+  background-image: radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+}
+
+.hero-section h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.hero-section .lead {
+  font-size: 1.3rem;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-section .btn {
+  position: relative;
+  z-index: 1;
+  border-radius: 50px;
+  padding: 12px 30px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.hero-section .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Card styling */
+.card {
+  border: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card-header {
+  background-color: var(--accent-pink);
+  border-bottom: 2px solid var(--light-purple);
+}
+
+/* Navbar custom styling */
+.navbar {
+  overflow: hidden !important;
+  width: 100% !important;
+  max-width: 100vw !important;
+}
+
+.navbar .container {
+  overflow: hidden !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.navbar-brand {
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: var(--primary-purple) !important;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  max-width: fit-content;
+}
+
+.navbar-brand:hover {
+  color: var(--dark-purple) !important;
+  /* Removed transform: scale(1.05) to prevent horizontal scroll */
+}
+
+.navbar-brand img {
+  transition: all 0.3s ease;
+}
+
+.navbar-brand:hover img {
+  /* Reduced rotation to prevent overflow */
+  transform: rotate(3deg);
+}
+
+.navbar-nav .nav-link {
+  color: var(--text-dark) !important;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+  color: var(--primary-purple) !important;
+}
+
+/* Navbar responsive fixes */
+.navbar-collapse {
+  overflow: hidden !important;
+}
+
+.navbar-toggler {
+  border: none !important;
+  outline: none !important;
+}
+
+.navbar-toggler:focus {
+  box-shadow: none !important;
+}
+
+/* Footer styling */
+.footer {
+  background-color: var(--primary-purple);
+  color: var(--white);
+  padding: 2rem 0;
+  margin-top: auto;
+}
+
+.footer a {
+  color: var(--white);
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: var(--accent-pink);
+}
+
+/* Form styling */
+.form-control:focus {
+  border-color: var(--primary-purple);
+  box-shadow: 0 0 0 0.2rem rgba(142, 68, 173, 0.25);
+}
+
+.form-label {
+  color: var(--text-dark);
+  font-weight: 500;
+}
+
+/* Product card styling */
+.product-card {
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.product-card:hover {
+  border-color: var(--light-purple);
+  box-shadow: 0 8px 16px rgba(142, 68, 173, 0.2);
+}
+
+.product-image {
+  height: 200px;
+  object-fit: cover;
+  width: 100%;
+}
+
+.price {
+  color: var(--primary-purple);
+  font-weight: bold;
+  font-size: 1.25rem;
+}
+
+/* Blog post styling */
+.blog-post {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background-color: var(--white);
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.blog-post h3 {
+  color: var(--primary-purple);
+  margin-bottom: 1rem;
+}
+
+.blog-meta {
+  color: var(--text-light);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+/* Newsletter section */
+.newsletter-section {
+  background: linear-gradient(135deg, var(--primary-purple) 0%, var(--dark-purple) 100%);
+  position: relative;
+  overflow: hidden;
+  color: var(--white);
+  padding: 4rem 0;
+  margin: 0;
+  width: 100%;
+}
+
+.newsletter-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="80" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="60" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="70" cy="30" r="1.5" fill="rgba(255,255,255,0.1)"/></svg>');
+}
+
+.newsletter-content {
+  position: relative;
+  z-index: 1;
+}
+
+.newsletter-form .form-control {
+  border: none;
+  border-radius: 50px;
+  padding: 15px 25px;
+  font-size: 1.1rem;
+}
+
+.newsletter-form .form-control:focus {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+  border-color: transparent;
+}
+
+.newsletter-btn {
+  border-radius: 50px;
+  font-weight: 600;
+  border: 2px solid white;
+  transition: all 0.3s ease;
+}
+
+.newsletter-btn:hover {
+  background-color: transparent !important;
+  color: white !important;
+  border-color: white;
+}
+
+.newsletter-section h3 {
+  margin-bottom: 1rem;
+}
+
+.newsletter-section .form-control {
+  border-radius: 25px;
+}
+
+.newsletter-section .btn {
+  border-radius: 25px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .hero-section h1 {
+    font-size: 2.5rem;
+  }
+  
+  .hero-section p {
+    font-size: 1rem;
+  }
+}
+
+/* Animation classes */
+.fade-in {
+  animation: fadeIn 0.6s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Blog specific styles */
+.blog-header {
+  background: linear-gradient(135deg, var(--accent-pink) 0%, #f8f9fa 100%);
+}
+
+.search-input {
+  border-radius: 25px;
+  border: 2px solid var(--light-purple);
+  padding: 12px 20px;
+}
+
+.search-input:focus {
+  border-color: var(--primary-purple);
+  box-shadow: 0 0 0 3px rgba(142, 68, 173, 0.1);
+}
+
+.category-badge {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 8px 16px;
+  border-radius: 20px;
+}
+
+.category-badge:hover {
+  transform: translateY(-1px);
+}
+
+.blog-card {
+  transition: all 0.3s ease;
+  border: none;
+  border-radius: 15px;
+}
+
+.blog-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(142, 68, 173, 0.2);
+}
+
+.blog-image {
+  height: 200px;
+  object-fit: cover;
+  border-radius: 15px 15px 0 0;
+}
+
+/* Shop specific styles */
+.shop-header {
+  background: linear-gradient(135deg, var(--accent-pink) 0%, #f8f9fa 100%);
+}
+
+.category-btn {
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.wishlist-btn {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.wishlist-btn:hover {
+  background-color: var(--primary-purple) !important;
+  color: white !important;
+}
+
+/* Contact specific styles */
+.contact-header {
+  background: linear-gradient(135deg, var(--accent-pink) 0%, #f8f9fa 100%);
+}
+
+.contact-item {
+  padding: 2rem;
+  border-radius: 15px;
+  transition: all 0.3s ease;
+}
+
+.contact-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(142, 68, 173, 0.1);
+}
+
+/* Newsletter CTA */
+.newsletter-cta {
+  background: linear-gradient(135deg, var(--primary-purple) 0%, var(--dark-purple) 100%);
+}
+
+.newsletter-input {
+  border-radius: 25px;
+  border: none;
+  padding: 12px 20px;
+}
+
+/* Accordion customization */
+.accordion-button {
+  background-color: var(--accent-pink);
+  border: none;
+  color: var(--text-dark);
+  font-weight: 500;
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: var(--primary-purple);
+  color: white;
+  box-shadow: none;
+}
+
+.accordion-button:focus {
+  box-shadow: 0 0 0 3px rgba(142, 68, 173, 0.25);
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+  .hero-section h1 {
+    font-size: 2.5rem;
+  }
+  
+  .hero-section .lead {
+    font-size: 1.1rem;
+  }
+  
+  .newsletter-form .btn {
+    margin-top: 1rem;
+  }
+  
+  .contact-item {
+    padding: 1rem;
+  }
+  
+  .category-badge,
+  .category-btn {
+    margin-bottom: 0.5rem;
+  }
+  
+  .container {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  
+  .hero-section {
+    padding: 60px 0;
+  }
+  
+  .newsletter-section {
+    padding: 3rem 0;
+  }
+}
+
+/* Fix for horizontal scrolling */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+}
+
+.row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.col, [class*="col-"] {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+/* Newsletter form responsive fixes */
+@media (max-width: 576px) {
+  .newsletter-form .col-md-7,
+  .newsletter-form .col-md-5 {
+    margin-bottom: 1rem;
+  }
+  
+  .newsletter-btn {
+    width: 100% !important;
+  }
+  
+  .hero-section .btn {
+    display: block;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  
+  .hero-section .btn:last-child {
+    margin-bottom: 0;
+  }
+}
+
+/* Product grid improvements */
+.product-card .card-img-top {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
+
+/* Blog card improvements */
+.blog-card .card-img-top {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+/* Logo animations and effects */
+.hero-section .paw-logo {
+  animation: logoFloat 4s ease-in-out infinite;
+  filter: drop-shadow(0 8px 25px rgba(142, 68, 173, 0.4));
+  transition: all 0.3s ease;
+  margin-top: 20px; /* Extra space for animation */
+  margin-bottom: 30px; /* Extra space for animation */
+}
+
+.hero-section .paw-logo:hover {
+  transform: scale(1.05);
+  filter: drop-shadow(0 12px 35px rgba(142, 68, 173, 0.6));
+}
+
+@keyframes logoFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-5px) rotate(1deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-5px) rotate(-1deg);
+  }
+}
+
+.footer .paw-logo {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  filter: drop-shadow(0 2px 8px rgba(107, 44, 145, 0.3));
+}
+
+.footer .paw-logo:hover {
+  transform: scale(1.15) rotate(8deg);
+  filter: drop-shadow(0 5px 15px rgba(107, 44, 145, 0.5));
+}
+
+.navbar-brand .paw-logo {
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.navbar-brand:hover .paw-logo {
+  /* Removed scale transform to prevent overflow, kept only rotation */
+  transform: rotate(3deg);
+}
+
+/* Enhanced glow effects */
+.paw-logo {
+  position: relative;
+}
+
+.paw-logo::before {
+  content: '';
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  right: -10%;
+  bottom: -10%;
+  background: radial-gradient(circle, rgba(142, 68, 173, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.paw-logo:hover::before {
+  opacity: 1;
+}
+
+/* Blog Meta */
+.blog-meta {
+  color: var(--text-light);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.blog-meta i {
+  color: var(--primary-purple);
+}
+
+/* Enhanced Product Cards */
+.product-card {
+  border: none;
+  border-radius: 15px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(142, 68, 173, 0.2);
+  border-color: var(--light-purple);
+}
+
+.product-image {
+  height: 200px;
+  object-fit: cover;
+  width: 100%;
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-image {
+  transform: scale(1.05);
+}
+
+.price {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--primary-purple);
+}
+
+/* Blog Styles */
+.blog-card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  border: none;
+  box-shadow: 0 2px 10px rgba(187, 143, 206, 0.1);
+}
+
+.blog-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 20px rgba(187, 143, 206, 0.2);
+}
+
+.blog-image {
+  height: 200px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  overflow: hidden;
+}
+
+.blog-card:hover .blog-image {
+  transform: scale(1.05);
+}
+
+.category-badge {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.category-badge:hover {
+  transform: translateY(-1px);
+}
+
+.search-input {
+  border-radius: 25px;
+  border: 2px solid #e9ecef;
+  padding: 10px 20px;
+  transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: var(--primary-purple);
+  box-shadow: 0 0 0 0.2rem rgba(187, 143, 206, 0.25);
+}
+
+/* Blog Post Detail Styles */
+.blog-post-detail {
+  line-height: 1.7;
+}
+
+.blog-content {
+  font-size: 1.1rem;
+}
+
+.blog-content h2,
+.blog-content h3,
+.blog-content h4,
+.blog-content h5 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.blog-content p {
+  text-align: justify;
+}
+
+.blog-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+.blog-content .table {
+  margin: 2rem 0;
+}
+
+.blog-content .table th {
+  background-color: var(--primary-purple);
+  color: white;
+  border-color: var(--primary-purple);
+}
+
+.author-avatar {
+  font-weight: bold;
+}
+
+.share-buttons .btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Newsletter CTA */
+.newsletter-cta {
+  background: linear-gradient(135deg, var(--primary-purple) 0%, #9b69c4 100%);
+}
+
+.newsletter-input {
+  border: none;
+  border-radius: 25px;
+}
+
+.newsletter-input:focus {
+  box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .blog-content {
+    font-size: 1rem;
+  }
+  
+  .category-badge {
+    font-size: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .share-buttons {
+    text-align: center !important;
+  }
+  
+  .container {
+    padding-left: 10px;
+    padding-right: 10px;
+    max-width: 100% !important;
+  }
+  
+  .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  
+  .col,
+  .col-12,
+  .col-md-6,
+  .col-lg-4,
+  .col-lg-8 {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+
+/* Extra responsive fixes */
+@media (max-width: 576px) {
+  .container {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  
+  .blog-card {
+    margin-bottom: 1rem;
+  }
+  
+  .blog-image {
+    height: 150px;
+  }
+  
+  .search-input {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Ensure no horizontal scrolling */
+.row {
+  overflow-x: hidden;
+}
+
+.col,
+[class*="col-"] {
+  overflow-x: hidden;
+  word-wrap: break-word;
+}
+
+/* Blog content responsive */
+.blog-content {
+  overflow-x: hidden !important;
+  word-wrap: break-word;
+  max-width: 100% !important;
+}
+
+.blog-content img,
+.blog-content table,
+.blog-content pre {
+  max-width: 100% !important;
+  overflow-x: auto;
+}
+
+.blog-content table {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+  width: 100% !important;
+}
+
+.blog-content pre {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.blog-content code {
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+/* Make sure cards don't break layout */
+.blog-card,
+.product-card {
+  max-width: 100% !important;
+  overflow: hidden;
+}
+
+/* Additional table responsive fix */
+.table-responsive {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Force all text to wrap */
+* {
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
