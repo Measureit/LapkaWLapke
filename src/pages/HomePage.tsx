@@ -6,30 +6,6 @@ import PawLogo from '../components/PawLogo.tsx';
 import type { BlogPost } from '../hooks/useBlogPosts.ts';
 
 const HomePage: React.FC = () => {
-  const [setPosts] = useState<BlogPost[]>([]);
-
-    useEffect(() => {
-    const importPosts = async () => {
-      const postFiles = import.meta.glob('../posts/*.md', { eager: true, as: 'raw' });
-      const loadedPosts = Object.entries(postFiles).map(([, content]) => {
-
-        const [metaRaw, ...body] = content.split('---').filter(Boolean);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const meta: any = {};
-        metaRaw.split('\n').forEach(line => {
-          const [key, value] = line.split(':').map(s => s.trim());
-          if (key) meta[key] = value;
-        });
-        return {
-          ...meta,
-          content: body.join('---')
-        };
-      });
-      setPosts(loadedPosts);
-    };
-    importPosts();
-  }, []);
-
   return (
     <div className="fade-in">
       {/* Hero Section */}
