@@ -1,10 +1,10 @@
 ---
 title: "🐾 Pierwszy wpis – Łapka w łapkę, czyli Dalmatyńczyk, który uleczył kawałek mnie"
 excerpt: "Osobista historia Asi – mamy trójki dzieci i kobiety z ADHD – o dalmatyńczyku, który stał się jej terapeutą, wsparciem i najbliższym przyjacielem."
-date: "2025-01-01"
+date: "2025-09-02"
 author: "Asia"
 category: "Historia osobista"
-image: "https://via.placeholder.com/800x400/85c1e9/ffffff?text=Dalmatyńczyk"
+image: "/LapkaWLapke/content/images/2025-09-02_pierwszy_wpis_lapka_wlapke.png"
 tags: ["dalmatyńczyk", "ADHD", "pies", "rodzina", "emocje"]
 readTime: "7 min"
 featured: true

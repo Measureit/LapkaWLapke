@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import matter from 'gray-matter';
+import fm from 'front-matter';
 
 export interface BlogPost {
   id: string;
@@ -21,64 +21,50 @@ export const useBlogPosts = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadBlogPosts = async () => {
-      try {
-        setLoading(true);
-        
-        // Lista plików markdown do załadowania
-        const postFiles = [
-          'jak-trenowac-szczeniaka.md',
-          'zdrowe-odzywianie-psa.md',
-          'pielegnacja-sierści.md'
-        ];
+    try {
+      setLoading(true);
 
-        const loadedPosts: BlogPost[] = [];
+      // Import wszystkich plików markdown z folderu
+      const modules = import.meta.glob('/public/content/blog/*.md', { eager: true, as: 'raw' });
 
-        for (const fileName of postFiles) {
-          try {
-            const response = await fetch(`/content/blog/${fileName}`);
-            if (!response.ok) {
-              console.warn(`Nie można załadować pliku: ${fileName}`);
-              continue;
-            }
-            
-            const markdownContent = await response.text();
-            const { data: frontmatter, content } = matter(markdownContent);
-            
-            const post: BlogPost = {
-              id: fileName.replace('.md', ''),
-              title: frontmatter.title || 'Brak tytułu',
-              excerpt: frontmatter.excerpt || '',
-              date: frontmatter.date || '',
-              author: frontmatter.author || '',
-              category: frontmatter.category || '',
-              image: frontmatter.image || 'https://via.placeholder.com/400x250/bb8fce/ffffff?text=Artykuł',
-              tags: frontmatter.tags || [],
-              readTime: frontmatter.readTime || '',
-              featured: frontmatter.featured || false,
-              content: content
-            };
+      const loadedPosts: BlogPost[] = [];
 
-            loadedPosts.push(post);
-          } catch (fileError) {
-            console.warn(`Błąd podczas ładowania ${fileName}:`, fileError);
-          }
-        }
+      for (const path in modules) {
+        const rawContent = modules[path] as string;
+        const parsed = fm(rawContent);
 
-        // Sortuj posty po dacie (najnowsze pierwsze)
-        loadedPosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-        
-        setPosts(loadedPosts);
-        setError(null);
-      } catch (err) {
-        console.error('Błąd podczas ładowania postów:', err);
-        setError('Nie udało się załadować artykułów');
-      } finally {
-        setLoading(false);
+        const frontmatter = parsed.attributes as Partial<BlogPost>;
+
+        const fileName = path.split('/').pop() || '';
+
+        const post: BlogPost = {
+          id: fileName.replace('.md', ''),
+          title: frontmatter.title || 'Brak tytułu',
+          excerpt: frontmatter.excerpt || '',
+          date: frontmatter.date || '',
+          author: frontmatter.author || '',
+          category: frontmatter.category || '',
+          image: frontmatter.image || 'https://via.placeholder.com/400x250/bb8fce/ffffff?text=Artykuł',
+          tags: frontmatter.tags || [],
+          readTime: frontmatter.readTime || '',
+          featured: frontmatter.featured || false,
+          content: parsed.body
+        };
+
+        loadedPosts.push(post);
       }
-    };
 
-    loadBlogPosts();
+      // Sortuj po dacie
+      loadedPosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+      setPosts(loadedPosts);
+      setError(null);
+    } catch (err) {
+      console.error('Błąd podczas ładowania postów:', err);
+      setError('Nie udało się załadować artykułów');
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   return { posts, loading, error };
