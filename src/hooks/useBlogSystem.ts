@@ -25,79 +25,65 @@ export interface PaginatedBlogPosts {
   hasPrevPage: boolean;
 }
 
-// Funkcja do PRAWDZIWEGO automatycznego skanowania - używa API endpoint!
-const discoverAllBlogFiles = async (): Promise<BlogPost[]> => {
-  console.log('🔍 Automatyczne odkrywanie WSZYSTKICH plików markdown przez API...');
+// PROSTE I CZYSTE rozwiązanie - bez API, bez skomplikowanych pluginów!
+const loadAllBlogPosts = async (): Promise<BlogPost[]> => {
+  console.log('🔍 Ładowanie blogów...');
+  
+  // Prosta lista plików - dodaj nowe tutaj
+  const blogFiles = [
+    'jak-trenowac-szczeniaka.md',
+    'zdrowe-odzywianie-psa.md',
+    'pielegnacja-sierści.md',
+    'test-auto-discovery.md'
+  ];
   
   const loadedPosts: BlogPost[] = [];
   
-  try {
-    // Użyj API endpoint do listowania plików - NAJLEPSZE ROZWIĄZANIE!
-    console.log('🔗 Łączenie z API endpoint...');
-    const response = await fetch(`${BASE_URL}${APP_CONFIG.API.BLOG_FILES}`);
-
-      const fileNames = await response.json();
-      console.log('📁 API zwróciło pliki:', fileNames);
-      
-      // Ładuj każdy odkryty plik
-      for (const fileName of fileNames) {
-        if (fileName.endsWith('.md')) {
-          await loadSingleBlogFile(fileName, loadedPosts);
+  // Ładuj każdy plik
+  for (const fileName of blogFiles) {
+    try {
+      const response = await fetch(`${BASE_URL}/content/blog/${fileName}`);
+      if (response.ok) {
+        const content = await response.text();
+        if (content.trim()) {
+          const parsed = fm(content);
+          const frontmatter = parsed.attributes as Partial<BlogPost>;
+          
+          const post: BlogPost = {
+            id: fileName.replace('.md', ''),
+            title: frontmatter.title || fileName.replace('.md', '').replace(/-/g, ' '),
+            excerpt: frontmatter.excerpt || '',
+            date: frontmatter.date || new Date().toISOString().split('T')[0],
+            author: frontmatter.author || 'Redakcja',
+            category: frontmatter.category || 'Blog',
+            image: frontmatter.image || APP_CONFIG.BLOG.DEFAULT_IMAGE,
+            tags: frontmatter.tags || [],
+            readTime: frontmatter.readTime || '5 min',
+            featured: frontmatter.featured || false,
+            content: parsed.body
+          };
+          
+          loadedPosts.push(post);
+          console.log(`✅ ${post.title}`);
         }
       }
-      
-      console.log(`✅ API: Załadowano ${loadedPosts.length} postów`);
-  } catch (error) {
-    console.error('❌ Błąd podczas łączenia z API:', error);
+    } catch (error) {
+      console.warn(`⚠️ Nie udało się załadować ${fileName}:`, error);
+    }
   }
   
-  const sortedPosts = sortPosts(loadedPosts);
-  console.log(`📚 Finalnie odkryto ${sortedPosts.length} postów`);
-  console.log(`📄 Znalezione pliki:`, sortedPosts.map(p => `${p.id}.md`));
+  // Sortuj po dacie (najnowsze na górze)
+  const sortedPosts = loadedPosts.sort((a, b) => 
+    new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
   
+  console.log(`📚 Załadowano ${sortedPosts.length} postów`);
   return sortedPosts;
 };
 
-// Pomocnicze funkcje
-const loadSingleBlogFile = async (fileName: string, loadedPosts: BlogPost[]) => {
-  try {
-    const response = await fetch(`${BASE_URL}${APP_CONFIG.API.BLOG_CONTENT}/${fileName}`);
-    if (response.ok) {
-      const content = await response.text();
-      if (content.trim()) {
-        const parsed = fm(content);
-        const frontmatter = parsed.attributes as Partial<BlogPost>;
-        
-        const post: BlogPost = {
-          id: fileName.replace('.md', ''),
-          title: frontmatter.title || fileName.replace('.md', '').replace(/-/g, ' '),
-          excerpt: frontmatter.excerpt || '',
-          date: frontmatter.date || new Date().toISOString().split('T')[0],
-          author: frontmatter.author || 'Redakcja',
-          category: frontmatter.category || 'Blog',
-          image: frontmatter.image || APP_CONFIG.BLOG.DEFAULT_IMAGE,
-          tags: frontmatter.tags || [],
-          readTime: frontmatter.readTime || '5 min',
-          featured: frontmatter.featured || false,
-          content: parsed.body
-        };
-        
-        loadedPosts.push(post);
-        console.log(`✅ Załadowano: ${post.title} (${fileName})`);
-      }
-    }
-  } catch (error) {
-    console.warn(`⚠️ Nie udało się załadować ${fileName}:`, error);
-  }
-};
+// ===== HOOKS =====
 
-const sortPosts = (posts: BlogPost[]): BlogPost[] => {
-  return posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-};
-
-// ===== UNIFIED HOOKS =====
-
-// Hook 1: Wszystkie posty (dla podstawowego użycia)
+// Hook 1: Wszystkie posty
 export const useBlogPosts = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
@@ -107,11 +93,11 @@ export const useBlogPosts = () => {
     const loadPosts = async () => {
       try {
         setLoading(true);
-        const discoveredPosts = await discoverAllBlogFiles();
-        setPosts(discoveredPosts);
+        const allPosts = await loadAllBlogPosts();
+        setPosts(allPosts);
         setError(null);
       } catch (err) {
-        console.error('Błąd podczas automatycznego odkrywania postów:', err);
+        console.error('Błąd ładowania postów:', err);
         setError('Nie udało się załadować artykułów');
       } finally {
         setLoading(false);
@@ -124,7 +110,7 @@ export const useBlogPosts = () => {
   return { posts, loading, error };
 };
 
-// Hook 2: Posty z paginacją i wyszukiwaniem (dla strony bloga)
+// Hook 2: Posty z paginacją i wyszukiwaniem
 export const usePaginatedBlogPosts = (page: number = 1, postsPerPage: number = 6, searchTerm: string = '') => {
   const [allPosts, setAllPosts] = useState<BlogPost[]>([]);
   const [paginatedData, setPaginatedData] = useState<PaginatedBlogPosts>({
@@ -143,11 +129,11 @@ export const usePaginatedBlogPosts = (page: number = 1, postsPerPage: number = 6
     const loadAllPosts = async () => {
       try {
         setLoading(true);
-        const discoveredPosts = await discoverAllBlogFiles();
-        setAllPosts(discoveredPosts);
+        const posts = await loadAllBlogPosts();
+        setAllPosts(posts);
         setError(null);
       } catch (err) {
-        console.error('Błąd podczas automatycznego odkrywania postów:', err);
+        console.error('Błąd ładowania postów:', err);
         setError('Nie udało się załadować artykułów');
       } finally {
         setLoading(false);
@@ -208,16 +194,16 @@ export const useHomePagePosts = (limit: number = 3) => {
     const loadLatestPosts = async () => {
       try {
         setLoading(true);
-        const allPosts = await discoverAllBlogFiles();
+        const allPosts = await loadAllBlogPosts();
         
-        // Bierz najnowsze posty (już posortowane po dacie)
+        // Najnowsze posty (już posortowane)
         const latestPosts = allPosts.slice(0, limit);
         
         setPosts(latestPosts);
         setError(null);
-        console.log(`🏠 Pokazuję ${latestPosts.length} najnowszych postów na stronie głównej`);
+        console.log(`🏠 Pokazuję ${latestPosts.length} najnowszych postów`);
       } catch (err) {
-        console.error('Błąd podczas ładowania najnowszych postów:', err);
+        console.error('Błąd ładowania najnowszych postów:', err);
         setError('Nie udało się załadować najnowszych artykułów');
       } finally {
         setLoading(false);
