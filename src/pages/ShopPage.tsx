@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Row, Col, Card, Button, Form, Badge } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Form, Badge, ButtonGroup } from 'react-bootstrap';
 
 const ShopPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('Wszystkie');

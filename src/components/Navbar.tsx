@@ -4,11 +4,26 @@ import { LinkContainer } from 'react-router-bootstrap';
 import PawLogo from './PawLogo.tsx';
 
 const Navbar: React.FC = () => {
+  // Funkcja przewijania na górę przy kliknięciu w logo
+  const handleLogoClick = () => {
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+      });
+    }, 100);
+  };
+
   return (
     <BootstrapNavbar bg="light" expand="lg" className="shadow-sm">
       <Container>
         <LinkContainer to="/">
-          <BootstrapNavbar.Brand className="d-flex align-items-center">
+          <BootstrapNavbar.Brand 
+            className="d-flex align-items-center" 
+            onClick={handleLogoClick}
+            style={{ cursor: 'pointer' }}
+          >
             <PawLogo size={45} className="me-2 paw-logo" />
             <span className="fw-bold">Łapka w Łapkę</span>
           </BootstrapNavbar.Brand>

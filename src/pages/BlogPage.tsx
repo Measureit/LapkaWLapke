@@ -1,39 +1,128 @@
-import React, { useState, useMemo } from 'react';
-import { Container, Row, Col, Card, Badge, Button, Form, Spinner, Alert } from 'react-bootstrap';
-import { useBlogPosts, type BlogPost } from '../hooks/useBlogPosts';
+import React, { useState, useEffect } from 'react';
+import { Container, Row, Col, Card, Badge, Button, Form, Spinner, Alert, InputGroup, Pagination } from 'react-bootstrap';
+import { usePaginatedBlogPosts, type BlogPost } from '../hooks/useBlogSystem';
 import BlogPostDetail from '../components/BlogPostDetail';
 
 const BlogPage: React.FC = () => {
-  const { posts, loading, error } = useBlogPosts();
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('Wszystkie');
+  const [searchInput, setSearchInput] = useState('');
+  const postsPerPage = 6;
 
-  // Wyciągnij unikalne kategorie z postów
-  const categories = useMemo(() => {
-    const uniqueCategories = ['Wszystkie', ...new Set(posts.map(post => post.category))];
+  const { posts, totalPosts, totalPages, hasNextPage, hasPrevPage, loading, error, allPosts } = 
+    usePaginatedBlogPosts(currentPage, postsPerPage, searchTerm);
+
+  // Przewijanie na górę przy załadowaniu strony
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  // Przewijanie na górę przy zmianie strony
+  useEffect(() => {
+    if (currentPage > 1) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [currentPage]);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSearchTerm(searchInput);
+    setCurrentPage(1); // Reset do pierwszej strony przy wyszukiwaniu
+  };
+
+  const clearSearch = () => {
+    setSearchInput('');
+    setSearchTerm('');
+    setCurrentPage(1);
+  };
+
+  // Funkcja powrotu z przewijaniem na górę
+  const handleBackToBlog = () => {
+    setSelectedPost(null);
+    // Przewiń na górę po powrocie
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+      });
+    }, 100);
+  };
+
+  const formatDate = (dateStr: string) => {
+    try {
+      return new Date(dateStr).toLocaleDateString('pl-PL', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    } catch {
+      return dateStr;
+    }
+  };
+
+  // Generowanie elementów paginacji
+  const generatePaginationItems = () => {
+    const items = [];
+    const maxVisiblePages = 5;
+    
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+    
+    if (endPage - startPage + 1 < maxVisiblePages) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    // Pierwsza strona
+    if (startPage > 1) {
+      items.push(
+        <Pagination.Item key={1} onClick={() => setCurrentPage(1)}>
+          1
+        </Pagination.Item>
+      );
+      if (startPage > 2) {
+        items.push(<Pagination.Ellipsis key="ellipsis1" />);
+      }
+    }
+
+    // Strony środkowe
+    for (let i = startPage; i <= endPage; i++) {
+      items.push(
+        <Pagination.Item key={i} active={i === currentPage} onClick={() => setCurrentPage(i)}>
+          {i}
+        </Pagination.Item>
+      );
+    }
+
+    // Ostatnia strona
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
+        items.push(<Pagination.Ellipsis key="ellipsis2" />);
+      }
+      items.push(
+        <Pagination.Item key={totalPages} onClick={() => setCurrentPage(totalPages)}>
+          {totalPages}
+        </Pagination.Item>
+      );
+    }
+
+    return items;
+  };
+
+  // Wyciągnij unikalne kategorie z wszystkich postów
+  const categories = React.useMemo(() => {
+    if (!allPosts || allPosts.length === 0) return ['Wszystkie'];
+    const uniqueCategories = ['Wszystkie', ...new Set(allPosts.map(post => post.category))];
     return uniqueCategories;
-  }, [posts]);
-
-  // Filtrowanie postów
-  const filteredPosts = useMemo(() => {
-    return posts.filter(post => {
-      const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           post.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
-      
-      const matchesCategory = selectedCategory === 'Wszystkie' || post.category === selectedCategory;
-      
-      return matchesSearch && matchesCategory;
-    });
-  }, [posts, searchTerm, selectedCategory]);
+  }, [allPosts]);
 
   // Jeśli wybrany jest konkretny post, pokaż jego szczegóły
   if (selectedPost) {
     return (
       <BlogPostDetail 
         post={selectedPost} 
-        onBack={() => setSelectedPost(null)} 
+        onBack={handleBackToBlog} 
       />
     );
   }
@@ -62,24 +151,44 @@ const BlogPage: React.FC = () => {
       <section className="py-4 border-bottom">
         <Container>
           <Row className="align-items-center">
-            <Col md={6}>
-              <Form.Control
-                type="search"
-                placeholder="Szukaj artykułów..."
-                className="search-input"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+            <Col md={8}>
+              <Form onSubmit={handleSearch}>
+                <InputGroup>
+                  <Form.Control
+                    type="text"
+                    placeholder="Szukaj artykułów, tagi, kategorie..."
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    className="search-input"
+                  />
+                  <Button variant="primary" type="submit">
+                    🔍 Szukaj
+                  </Button>
+                  {searchTerm && (
+                    <Button variant="outline-secondary" onClick={clearSearch}>
+                      Wyczyść
+                    </Button>
+                  )}
+                </InputGroup>
+              </Form>
+              
+              {searchTerm && (
+                <div className="mt-2">
+                  <small className="text-muted">
+                    Wyniki dla: <strong>"{searchTerm}"</strong> - 
+                    znaleziono <strong>{totalPosts}</strong> artykuł{totalPosts === 1 ? '' : totalPosts < 5 ? 'y' : 'ów'}
+                  </small>
+                </div>
+              )}
             </Col>
-            <Col md={6}>
+            <Col md={4}>
               <div className="d-flex flex-wrap gap-2 mt-3 mt-md-0">
                 {categories.map((category) => (
                   <Badge 
                     key={category}
-                    bg={category === selectedCategory ? "primary" : "outline-secondary"}
+                    bg="outline-secondary"
                     className="category-badge"
                     role="button"
-                    onClick={() => setSelectedCategory(category)}
                     style={{ cursor: 'pointer' }}
                   >
                     {category}
@@ -125,18 +234,23 @@ const BlogPage: React.FC = () => {
       {!loading && !error && (
         <section className="py-5">
           <Container>
-            {filteredPosts.length === 0 ? (
+            {posts.length === 0 ? (
               <Row>
                 <Col className="text-center">
                   <i className="bi bi-search display-1 text-muted"></i>
                   <h3 className="text-muted mt-3">Nie znaleziono artykułów</h3>
-                  <p className="text-muted">Spróbuj zmienić kryteria wyszukiwania</p>
+                  <p className="text-muted">
+                    {searchTerm 
+                      ? `Nie znaleziono artykułów dla frazy "${searchTerm}". Spróbuj innego wyszukiwania.`
+                      : 'Obecnie nie ma dostępnych artykułów.'
+                    }
+                  </p>
                 </Col>
               </Row>
             ) : (
               <>
                 <Row>
-                  {filteredPosts.map((post) => (
+                  {posts.map((post) => (
                     <Col lg={4} md={6} key={post.id} className="mb-4">
                       <Card className="h-100 blog-card">
                         <Card.Img 
@@ -144,13 +258,14 @@ const BlogPage: React.FC = () => {
                           src={post.image}
                           alt={post.title}
                           className="blog-image"
+                          style={{ height: '200px', objectFit: 'cover' }}
                         />
                         <Card.Body className="d-flex flex-column">
                           <div className="mb-2">
                             <Badge bg="primary" className="me-2">{post.category}</Badge>
                             <small className="text-muted">
                               <i className="bi bi-calendar3 me-1"></i>
-                              {post.date}
+                              {formatDate(post.date)}
                             </small>
                           </div>
                           <Card.Title className="h5">{post.title}</Card.Title>
@@ -193,16 +308,33 @@ const BlogPage: React.FC = () => {
                   ))}
                 </Row>
 
-                {/* Results Info */}
-                <Row className="mt-4">
-                  <Col className="text-center">
-                    <p className="text-muted">
-                      Znaleziono {filteredPosts.length} artykuł{filteredPosts.length === 1 ? '' : filteredPosts.length < 5 ? 'y' : 'ów'}
-                      {searchTerm && ` dla "${searchTerm}"`}
-                      {selectedCategory !== 'Wszystkie' && ` w kategorii "${selectedCategory}"`}
-                    </p>
-                  </Col>
-                </Row>
+                {/* Paginacja */}
+                {totalPages > 1 && (
+                  <Row className="mt-5">
+                    <Col>
+                      <div className="d-flex justify-content-center">
+                        <Pagination>
+                          <Pagination.Prev 
+                            disabled={!hasPrevPage}
+                            onClick={() => setCurrentPage(currentPage - 1)}
+                          />
+                          {generatePaginationItems()}
+                          <Pagination.Next 
+                            disabled={!hasNextPage}
+                            onClick={() => setCurrentPage(currentPage + 1)}
+                          />
+                        </Pagination>
+                      </div>
+                      
+                      <div className="text-center mt-2">
+                        <small className="text-muted">
+                          Strona {currentPage} z {totalPages} • 
+                          Wyświetlanie {((currentPage - 1) * postsPerPage) + 1}-{Math.min(currentPage * postsPerPage, totalPosts)} z {totalPosts} artykułów
+                        </small>
+                      </div>
+                    </Col>
+                  </Row>
+                )}
               </>
             )}
           </Container>
@@ -240,6 +372,37 @@ const BlogPage: React.FC = () => {
           </Row>
         </Container>
       </section>
+
+      <style>{`
+        .blog-card {
+          transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .blog-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+        }
+        .pagination .page-link {
+          color: #8e44ad;
+          border-color: #8e44ad;
+        }
+        .pagination .page-item.active .page-link {
+          background-color: #8e44ad;
+          border-color: #8e44ad;
+        }
+        .pagination .page-link:hover {
+          color: #6c2d8b;
+          background-color: #f8f4fc;
+          border-color: #8e44ad;
+        }
+        .blog-image {
+          height: 200px;
+          object-fit: cover;
+        }
+        .search-input:focus {
+          border-color: #8e44ad;
+          box-shadow: 0 0 0 0.2rem rgba(142, 68, 173, 0.25);
+        }
+      `}</style>
     </div>
   );
 };
