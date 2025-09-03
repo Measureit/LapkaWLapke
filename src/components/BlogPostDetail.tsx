@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Container, Row, Col, Badge, Button } from 'react-bootstrap';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { type BlogPost } from '../hooks/useBlogPosts';
+import { type BlogPost } from '../hooks/useBlogSystem';
 
 interface BlogPostDetailProps {
   post: BlogPost;
@@ -10,6 +10,14 @@ interface BlogPostDetailProps {
 }
 
 const BlogPostDetail: React.FC<BlogPostDetailProps> = ({ post, onBack }) => {
+  // Przewiń na górę przy załadowaniu szczegółów posta
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    });
+  }, [post.id]); // Przewiń gdy zmieni się post
   return (
     <div className="fade-in">
       {/* Back Button */}

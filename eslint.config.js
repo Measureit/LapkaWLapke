@@ -20,4 +20,15 @@ export default tseslint.config([
       globals: globals.browser,
     },
   },
+  // Osobna konfiguracja dla vite.config.ts
+  {
+    files: ['vite.config.ts'],
+    languageOptions: {
+      globals: globals.node,
+    },
+    rules: {
+      '@typescript-eslint/ban-ts-comment': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
+  },
 ])

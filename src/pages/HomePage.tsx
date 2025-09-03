@@ -1,9 +1,39 @@
+import React, { useState } from 'react';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import NewsletterSection from '../components/NewsletterSection.tsx';
 import PawLogo from '../components/PawLogo.tsx';
+import { useHomePagePosts, type BlogPost } from '../hooks/useBlogSystem.ts';
+import BlogPostDetail from '../components/BlogPostDetail.tsx';
 
 const HomePage: React.FC = () => {
+  const { posts, loading, error } = useHomePagePosts();
+  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
+
+  console.log('🏠 HomePage render - posts:', posts.length, 'loading:', loading, 'error:', error);
+
+  // Funkcja powrotu z przewijaniem na górę
+  const handleBackToHome = () => {
+    setSelectedPost(null);
+    // Przewiń na górę po powrocie
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+      });
+    }, 100);
+  };
+
+  // Jeśli wybrany jest konkretny post, pokaż jego szczegóły
+  if (selectedPost) {
+    return (
+      <BlogPostDetail 
+        post={selectedPost} 
+        onBack={handleBackToHome} 
+      />
+    );
+  }
   return (
     <div className="fade-in">
       {/* Hero Section */}
@@ -54,7 +84,7 @@ const HomePage: React.FC = () => {
               <Card className="h-100 text-center border-0 shadow-sm">
                 <Card.Body className="p-4">
                   <div className="mb-3">
-                    <i className="bi bi-journal-heart text-primary" style={{ fontSize: '3rem' }}></i>
+                    <i className="bi bi-journal-bookmark-fill text-primary" style={{ fontSize: '3rem' }}></i>
                   </div>
                   <Card.Title className="text-primary">Blog o Psach</Card.Title>
                   <Card.Text>
@@ -110,7 +140,99 @@ const HomePage: React.FC = () => {
           </Row>
         </Container>
       </section>
-      
+
+      {/* Latest Blog Posts */}
+      <section className="py-5 bg-light">
+        <Container>
+          <Row className="mb-5">
+            <Col>
+              <h2 className="text-center text-primary mb-3">Najnowsze wpisy z bloga</h2>
+              <p className="text-center text-muted">
+                Poznaj najnowsze porady i ciekawostki ze świata psów
+              </p>
+            </Col>
+          </Row>
+          
+          {loading && (
+            <Row>
+              <Col className="text-center">
+                <p className="text-muted">Ładowanie postów...</p>
+              </Col>
+            </Row>
+          )}
+          
+          {error && (
+            <Row>
+              <Col className="text-center">
+                <p className="text-warning">{error}</p>
+              </Col>
+            </Row>
+          )}
+          
+          {!loading && !error && posts.length === 0 && (
+            <Row>
+              <Col className="text-center">
+                <p className="text-muted">Brak dostępnych postów</p>
+              </Col>
+            </Row>
+          )}
+          
+          <Row>
+            {posts.map((post) => (
+              <Col md={4} key={post.id} className="mb-4">
+                <Card className="h-100">
+                  <Card.Img 
+                    variant="top" 
+                    src={post.image}
+                    alt={post.title}
+                    style={{ height: '200px', objectFit: 'cover' }}
+                    onError={(e) => {
+                      e.currentTarget.src = 'https://via.placeholder.com/300x200/bb8fce/ffffff?text=Artykuł';
+                    }}
+                  />
+                  <Card.Body className="d-flex flex-column">
+                    <div className="blog-meta">
+                      <i className="bi bi-calendar3 me-1"></i>
+                      {new Date(post.date).toLocaleDateString('pl-PL', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                      })}
+                    </div>
+                    <Card.Title>{post.title}</Card.Title>
+                    <Card.Text className="flex-grow-1">
+                      {post.excerpt}
+                    </Card.Text>
+                    <div className="d-flex justify-content-between align-items-center mt-auto">
+                      <small className="text-muted">
+                        <i className="bi bi-clock me-1"></i>
+                        {post.readTime}
+                      </small>
+                      <Button 
+                        variant="primary" 
+                        size="sm"
+                        onClick={() => setSelectedPost(post)}
+                      >
+                        Czytaj więcej
+                      </Button>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+          <Row>
+            <Col className="text-center">
+              <LinkContainer to="/blog">
+                <Button variant="outline-primary" size="lg">
+                  Zobacz wszystkie wpisy <i className="bi bi-arrow-right ms-1"></i>
+                </Button>
+              </LinkContainer>
+            </Col>
+          </Row>
+        </Container>
+      </section>
+
       {/* Newsletter Section */}
       <NewsletterSection />
 
