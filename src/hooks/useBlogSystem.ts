@@ -25,50 +25,52 @@ export interface PaginatedBlogPosts {
   hasPrevPage: boolean;
 }
 
-// PROSTE I CZYSTE rozwiązanie - bez API, bez skomplikowanych pluginów!
+// NAJLEPSZE rozwiązanie - automatyczny import z Vite!
 const loadAllBlogPosts = async (): Promise<BlogPost[]> => {
-  console.log('🔍 Ładowanie blogów...');
+  console.log('🔍 Automatyczne ładowanie blogów z Vite import.meta.glob...');
   
-  // Prosta lista plików - dodaj nowe tutaj
-  const blogFiles = [
-    'jak-trenowac-szczeniaka.md',
-    'zdrowe-odzywianie-psa.md',
-    'pielegnacja-sierści.md',
-    'test-auto-discovery.md'
-  ];
+  // Automatycznie importuj wszystkie pliki .md z folderu
+  const blogModules = import.meta.glob(`/public/content/blog/*.md`, { 
+    as: 'raw',
+    eager: false 
+  });
+  
+  console.log('📁 Znalezione pliki:', Object.keys(blogModules));
   
   const loadedPosts: BlogPost[] = [];
   
-  // Ładuj każdy plik
-  for (const fileName of blogFiles) {
+  // Przeiteruj przez wszystkie znalezione pliki
+  for (const [path, moduleLoader] of Object.entries(blogModules)) {
     try {
-      const response = await fetch(`${BASE_URL}/content/blog/${fileName}`);
-      if (response.ok) {
-        const content = await response.text();
-        if (content.trim()) {
-          const parsed = fm(content);
-          const frontmatter = parsed.attributes as Partial<BlogPost>;
-          
-          const post: BlogPost = {
-            id: fileName.replace('.md', ''),
-            title: frontmatter.title || fileName.replace('.md', '').replace(/-/g, ' '),
-            excerpt: frontmatter.excerpt || '',
-            date: frontmatter.date || new Date().toISOString().split('T')[0],
-            author: frontmatter.author || 'Redakcja',
-            category: frontmatter.category || 'Blog',
-            image: frontmatter.image || APP_CONFIG.BLOG.DEFAULT_IMAGE,
-            tags: frontmatter.tags || [],
-            readTime: frontmatter.readTime || '5 min',
-            featured: frontmatter.featured || false,
-            content: parsed.body
-          };
-          
-          loadedPosts.push(post);
-          console.log(`✅ ${post.title}`);
-        }
+      // Wyciągnij nazwę pliku z pełnej ścieżki
+      const fileName = path.split('/').pop() || '';
+      
+      // Załaduj zawartość pliku
+      const content = await moduleLoader() as string;
+      
+      if (content.trim()) {
+        const parsed = fm(content);
+        const frontmatter = parsed.attributes as Partial<BlogPost>;
+        
+        const post: BlogPost = {
+          id: fileName.replace('.md', ''),
+          title: frontmatter.title || fileName.replace('.md', '').replace(/-/g, ' '),
+          excerpt: frontmatter.excerpt || '',
+          date: frontmatter.date || new Date().toISOString().split('T')[0],
+          author: frontmatter.author || 'Redakcja',
+          category: frontmatter.category || 'Blog',
+          image: frontmatter.image || APP_CONFIG.BLOG.DEFAULT_IMAGE,
+          tags: frontmatter.tags || [],
+          readTime: frontmatter.readTime || '5 min',
+          featured: frontmatter.featured || false,
+          content: parsed.body
+        };
+        
+        loadedPosts.push(post);
+        console.log(`✅ ${post.title}`);
       }
     } catch (error) {
-      console.warn(`⚠️ Nie udało się załadować ${fileName}:`, error);
+      console.warn(`⚠️ Nie udało się załadować pliku:`, error);
     }
   }
   
